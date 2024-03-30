@@ -77,7 +77,6 @@ void euler()
 }
 signed main()
 {
-    freopen("custom_input.txt","r",stdin);
     cin>>n>>start;
     FOR(i,1,n)
         FOR(j,1,n) 

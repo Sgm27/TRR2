@@ -91,7 +91,6 @@ void euler()
 }
 signed main()
 {
-    freopen("custom_input.txt","r",stdin);
     cin>>n>>start;
     int edge_idx = 0;
     FOR(i,1,n)

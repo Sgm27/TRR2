@@ -58,6 +58,7 @@ void euler()
                 ce.push_back(st.top());
                 st.pop();
             }
+            cout<<"Buoc "<<step++<<"\n";
             cout<<"CE = ";
             for (int i : ce) cout<<i<<" ";
             cout<<"\n--------------------\n";

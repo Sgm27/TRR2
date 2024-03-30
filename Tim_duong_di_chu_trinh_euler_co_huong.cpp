@@ -110,7 +110,11 @@ signed main()
     cout<<"}\n";
     cout<<"Tim duong di Euler & chu trinh Euler\n";
     FOR(i,1,n)
-        if (deg_out[i] - deg_in[i] == 1) start = i;
+        if (deg_out[i] - deg_in[i] == 1) 
+        {
+            cout<<"Do thi da cho la nua Euler\n";
+            start = i;
+        }
     FOR(i,1,n) sort(ALL(adj[i]), greater<int>());
     euler();
 }

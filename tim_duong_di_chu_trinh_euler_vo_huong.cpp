@@ -127,6 +127,7 @@ signed main()
         if (deg[i] % 2 == 1) 
         {
             start = i;
+            cout<<"Do thi da cho la nua Euler\n";
             break;
         }
     FOR(i,1,n) sort(ALL(adj[i]), greater<pii>());

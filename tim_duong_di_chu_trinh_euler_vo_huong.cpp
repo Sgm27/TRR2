@@ -13,16 +13,24 @@ const int MOD=1e9+7,INF=4e18;
 int n,start;
 int a[maxn][maxn];
 int ke_vo_huong[maxn][maxn];
-int deg_in[maxn], deg_out[maxn];
+int deg[maxn];
 int mark[maxn];
 vector<pii> dfs_path;
-vi adj[maxn];
+vector<pii> adj[maxn];
+int mark_edge[maxn];
 void dfs(int u,int prev = 0)
 {
     mark[u] = 1;
     dfs_path.push_back({u,prev});
     FOR(i,1,n)
         if (!mark[i] && ke_vo_huong[u][i]) dfs(i,u);
+}
+bool check_empty(vector<pii> x)
+{
+    int cnt = 0;
+    for (auto it : x)
+        if (mark_edge[it.second]) cnt++;
+    return cnt == x.size();
 }
 void euler()
 {
@@ -53,7 +61,7 @@ void euler()
             for (int i : cur) cout<<i<<" "; cout<<"\n";
             cout<<"Canh da duyet = ";
             for (auto it : edges) cout<<"("<<it.first<<","<<it.second<<") ,"; cout<<"\n";
-            while (st.size() && adj[st.top()].size() == 0)
+            while (st.size() && check_empty(adj[st.top()]))
             {
                 ce.push_back(st.top());
                 st.pop();
@@ -66,8 +74,14 @@ void euler()
         else
         {
             int u = st.top();
-            edges.push_back({u, adj[u].back()});
-            st.push(adj[u].back());
+            if (mark_edge[adj[u].back().second]) 
+            {
+                adj[u].pop_back();
+                continue;
+            }
+            mark_edge[adj[u].back().second] = 1;
+            edges.push_back({u, adj[u].back().first});
+            st.push(adj[u].back().first);
             adj[u].pop_back();
         }
     }
@@ -79,23 +93,23 @@ signed main()
 {
     freopen("custom_input.txt","r",stdin);
     cin>>n>>start;
+    int edge_idx = 0;
     FOR(i,1,n)
         FOR(j,1,n) 
         {
             char c; cin>>c;
             a[i][j] = c - '0';
-            if (a[i][j]) 
+            if (a[i][j] && i < j) 
             {
-                adj[i].push_back(j);
-                deg_in[i]++;
-                deg_out[j]++;
+                a[j][i] = 1;
+                edge_idx++;
+                adj[i].push_back({j,edge_idx});
+                adj[j].push_back({i,edge_idx});
+                deg[i]++, deg[j]++;
             }
         }
-    cout<<"deg_in = ";
-    FOR(i,1,n) cout<<"{"<<i<<","<<deg_in[i]<<"},";
-    cout<<"\n";
-    cout<<"deg_out = ";
-    FOR(i,1,n) cout<<"{"<<i<<","<<deg_out[i]<<"},";
+    cout<<"deg = ";
+    FOR(i,1,n) cout<<"{"<<i<<","<<deg[i]<<"},";
     cout<<"\n";
     FOR(i,1,n) 
         FOR(j,1,n)
@@ -105,25 +119,32 @@ signed main()
                 ke_vo_huong[j][i] = 1;
             }
     dfs(1);
-    cout<<"dfs(1) G vo huong = {";
+    cout<<"dfs(1) = {";
     for (pii x : dfs_path) cout<<x.first<<" ("<<x.second<<") ; ";
     cout<<"}\n";
     cout<<"Tim duong di Euler & chu trinh Euler\n";
     FOR(i,1,n)
-        if (deg_out[i] - deg_in[i] == 1) start = i;
-    FOR(i,1,n) sort(ALL(adj[i]), greater<int>());
+        if (deg[i] % 2 == 1) 
+        {
+            start = i;
+            break;
+        }
+    FOR(i,1,n) sort(ALL(adj[i]), greater<pii>());
     euler();
 }
 /*
-    10 3
-    0 1 1 0 0 0 0 0 0 0 
-    0 0 1 1 1 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 1
-    0 0 0 0 0 1 1 0 0 0
-    0 0 0 0 0 1 0 0 0 0
-    0 0 0 0 0 0 1 1 0 0
-    0 0 0 1 0 0 0 1 0 0
-    1 1 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 1
-    1 1 0 0 0 0 0 0 0 0
+    13 1
+    0 1 0 0 0 1 0 0 0 0 0 0 0
+    1 0 1 0 1 1 0 0 0 0 0 0 0 
+    0 1 0 1 1 0 0 0 0 0 1 0 0
+    0 0 1 0 0 0 1 1 0 0 1 0 0
+    0 1 1 0 0 1 1 0 0 0 0 0 0
+    1 1 0 0 1 0 1 0 0 0 0 0 0
+    0 0 0 1 1 1 0 1 0 0 0 0 0
+    0 0 0 1 0 0 1 0 1 1 0 0 0 
+    0 0 0 0 0 0 0 1 0 1 0 1 1
+    0 0 0 0 0 0 0 1 1 0 1 1 0
+    0 0 1 1 0 0 0 0 0 1 0 1 0
+    0 0 0 0 0 0 0 0 1 1 1 0 1
+    0 0 0 0 0 0 0 0 1 0 0 1 0
 */
